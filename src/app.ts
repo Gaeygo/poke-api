@@ -2,6 +2,7 @@ import Fastify, { FastifyReply, FastifyRequest } from "fastify";
 import pokeRoutes from "./routes/pokemon.route";
 import { errorHandler } from "./utils/errorHandler";
 import logger from "./utils/logger";
+import { UserRoutes } from "./routes/user.route";
 
 
 export const server = Fastify({ logger: logger, requestTimeout: 30000 })
@@ -20,7 +21,7 @@ server.get("/", (request: FastifyRequest, reply: FastifyReply) => {
 
 
 async function main() {
-
+    server.register(UserRoutes, {prefix: "api/auth"})
     server.register(pokeRoutes, {prefix: "api/pokemon"})
     try {
         await server.listen({ port: address as number  });
