@@ -1,0 +1,28 @@
+datasource db {
+    provider = "sqlite"
+    url      = "file:./dev.db"
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+model User {
+    id        String   @id
+    name      String
+    email     String
+    password  String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt 
+    ApiKey    ApiKey[]
+}
+
+model ApiKey {
+    id        String   @id
+    keyValue  String   @unique
+    expired   Boolean
+    expiresIn DateTime
+    createdAt DateTime @default(now())
+    userId String
+    user   User   @relation(fields: [userId], references: [id])
+}
