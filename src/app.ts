@@ -3,6 +3,7 @@ import pokeRoutes from "./routes/pokemon.route";
 import { errorHandler } from "./utils/errorHandler";
 import logger from "./utils/logger";
 import { UserRoutes } from "./routes/user.route";
+import prisma from "./utils/prisma";
 
 
 export const server = Fastify({ logger: logger, requestTimeout: 30000 })
@@ -17,6 +18,10 @@ server.setErrorHandler(errorHandler)
 server.get("/", (request: FastifyRequest, reply: FastifyReply) => {
     reply.code(200).send({message: "welcome"})
 })
+
+process.on('beforeExit', async () => {
+    await prisma.$disconnect();
+  });
 
 
 

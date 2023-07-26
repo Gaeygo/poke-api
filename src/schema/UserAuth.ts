@@ -1,6 +1,7 @@
 import { FastifySchema } from "fastify";
 
-export interface UserLoginInput { email: string, password: string }
+export interface UserInput { email: string, password: string }
+
 
 
 

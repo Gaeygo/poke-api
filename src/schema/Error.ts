@@ -1,13 +1,16 @@
 /// ERROR HANDLING CLASS THAT EXTENDS THE NATIVE ERROR CLASS
 
+import { PrismaClientInitializationError, PrismaClientRustPanicError, PrismaClientUnknownRequestError, PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+
 class HttpException extends Error {
     statusCode: number;
-    status?: string;
+    status: string;
     message: string;
 
     constructor(
         statusCode: number = HttpStatus.INTERNAL_SERVER_ERROR,
         message: string = "Internal Server Error",
+        status:string = "error"
     ) {
         super(message);
         this.status = "error";
@@ -15,6 +18,9 @@ class HttpException extends Error {
         this.message = message;
     }
 }
+
+
+
 
 
 export enum HttpStatus {
@@ -29,6 +35,8 @@ export enum HttpStatus {
     UNPROCESSABLE_ENTITY = 422,
     INTERNAL_SERVER_ERROR = 500
 }
+
+
 
 export default HttpException;
 
