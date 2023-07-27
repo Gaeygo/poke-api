@@ -1,10 +1,10 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { updateUser, createApiKey, createUser, deleteApiKey } from "../helper/DBhelper";
+import { createApiKey, deleteApiKey } from "../helper/DBhelper";
 import { UserInput } from "../schema/UserAuth";
 import prisma from "../utils/prisma";
 import HttpException from "../schema/Error";
 import crypto from "crypto";
-import { PrismaClientValidationError } from "@prisma/client/runtime/library";
+import { hashPassword, verifyPassword } from "../helper/Hash";
 
 //User Login route handler
 export async function userLogin(request: FastifyRequest<{ Body: UserInput }>, reply: FastifyReply) {
@@ -17,7 +17,9 @@ export async function userLogin(request: FastifyRequest<{ Body: UserInput }>, re
         })
         if (!user) throw new HttpException(400, "User doesnt exist, create account")
 
-        if (user && user.password === password) {
+        const passwordRight = await verifyPassword(password, user.password)
+
+        if (passwordRight) {
             reply.code(200).send(user)
         } else {
             throw new HttpException(400, "User Login is details incorrect")
@@ -32,15 +34,18 @@ export async function userLogin(request: FastifyRequest<{ Body: UserInput }>, re
 
 
 
-
+// User account Creation route Handler
 export async function userCreateAccount(request: FastifyRequest<{ Body: UserInput }>, reply: FastifyReply) {
     try {
         const { email, password } = request.body
+        const hashedPassword = await hashPassword(password)
+
+
         const user = await prisma.user.create({
             data: {
                 id: crypto.randomBytes(16).toString('hex'),
                 email,
-                password
+                password: hashedPassword
 
             }
         })
@@ -50,16 +55,6 @@ export async function userCreateAccount(request: FastifyRequest<{ Body: UserInpu
 
 
     } catch (error) {
-        // if (error instanceof HttpException) {
-        //     throw error
-        // }
-        // if (error instanceof PrismaClientValidationError) {
-        //     error.message
-        // }
-        // else {
-        //     // reply.status(500).send({ status: 500, message: 'Internal Server Error' });
-        //     throw error
-        // }
         throw error
     }
 
