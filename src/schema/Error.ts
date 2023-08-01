@@ -1,7 +1,5 @@
 /// ERROR HANDLING CLASS THAT EXTENDS THE NATIVE ERROR CLASS
 
-import { PrismaClientInitializationError, PrismaClientRustPanicError, PrismaClientUnknownRequestError, PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
-
 class HttpException extends Error {
     statusCode: number;
     status: string;

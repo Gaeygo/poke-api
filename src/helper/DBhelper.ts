@@ -18,10 +18,27 @@ import prisma from "../utils/prisma"
 //     })
 // }
 
-export const createApiKey = async (apiDetails: ApiKey) => {
-    const newApiKey = await prisma.apiKey.create({
-        data: apiDetails
+
+function createDateTime(weeksToAdd: number) {
+    // Calculate the date after the specified number of weeks
+    const dateInWeeks = new Date();
+    dateInWeeks.setDate(dateInWeeks.getDate() + weeksToAdd * 7);
+
+    return dateInWeeks.toISOString();
+
+}
+
+export const createApiKey = async (userId: string, id: string, apiValue: string) => {
+  const newApiKey = await prisma.apiKey.create({
+        data: {
+            id: id,
+            userId: userId,
+            expired: false,
+            keyValue: apiValue,
+            expiresIn: createDateTime(7)
+        }
     })
+    return newApiKey
 }
 
 

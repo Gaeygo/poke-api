@@ -13,21 +13,27 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@fastify/cookie": "^8.3.0",
+    "@fastify/env": "^4.2.0",
     "@fastify/formbody": "^7.4.0",
+    "@fastify/session": "^10.4.0",
+    "@fastify/view": "^8.0.0",
     "@prisma/client": "^5.0.0",
+    "@types/dotenv": "^8.2.0",
     "@types/handlebars": "^4.1.0",
     "axios": "^1.4.0",
     "axios-cache-interceptor": "^1.2.0",
     "bcrypt": "^5.1.0",
+    "connect-redis": "^7.1.0",
     "crypto": "^1.0.1",
+    "dotenv": "^16.3.1",
     "fastify": "^4.19.2",
-    "fastify-formbody": "^5.3.0",
-    "fastify-session": "^5.2.1",
     "handlebars": "^4.7.7",
     "pino": "^8.14.1",
     "pino-pretty": "^10.0.1",
     "pokenode-ts": "^1.20.0",
     "prisma": "^5.0.0",
+    "redis": "^4.6.7",
     "sqlite": "^5.0.1",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.1.6",
@@ -35,6 +41,7 @@
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
-    "@types/node": "^20.4.4"
+    "@types/node": "^20.4.4",
+    "@types/uuid": "^9.0.2"
   }
 }

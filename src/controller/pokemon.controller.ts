@@ -1,12 +1,13 @@
 import { FastifyReply, FastifyRequest, errorCodes } from "fastify"
-import { FullPokemon, NeededPokemonData, PokemonColor, PokemonList, PokemonSearch, QueryPokeParams } from "../schema/Pokemon"
+import { ApiKey, FullPokemon, NeededPokemonData, PokemonColor, PokemonList, PokemonSearch, QueryPokeParams } from "../schema/Pokemon"
 import instance from "../utils/axios"
 import HttpException from "../schema/Error";
 import fetchRecursiveData from "../utils/fetch";
 import { PokemonForm } from "pokenode-ts";
 
 export async function fetchPokemonHandler(request: FastifyRequest<{
-    Body: PokemonSearch
+    Body: PokemonSearch,
+    Headers: ApiKey
 }>, reply: FastifyReply) {
 
     console.log(request.body);
@@ -49,7 +50,7 @@ export async function fetchPokemonList(request: FastifyRequest<{ Querystring: Qu
             return reply.code(200).send(pokeDetails)
 
         }
-        
+
 
 
         // return reply.code(200).send(pokeList.data)

@@ -13,5 +13,7 @@ export const bodyUserRouteOptions: FastifySchema = {
             password: { type: "string" }
         },
         required: ["email", "password"]
-    }
+        
+    },
+    
 }

@@ -4,8 +4,11 @@ import { Pokemon, PokemonClient, PokemonSpecies } from "pokenode-ts";
 
 type OmitAllExcept<T, K extends keyof T> = Pick<T, K>;
 
+export type ApiKey = {
+  key: string
+}
 
-export type PokemonSearch = {
+export type PokemonSearch =  {
   id: string | number
 };
 

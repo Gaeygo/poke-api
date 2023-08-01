@@ -1,9 +1,21 @@
-import { FastifyReply, FastifyRequest } from 'fastify';
-import HttpException, {  HttpStatus } from "../schema/Error";
+import { FastifyError, FastifyReply, FastifyRequest } from 'fastify';
+import HttpException, { HttpStatus } from "../schema/Error";
 import logger from './logger';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
-export const errorHandler = (error: HttpException | PrismaClientKnownRequestError | unknown, request: FastifyRequest, reply: FastifyReply) => {
+// checking if an object is of a certain type
+function isCustomInterface<T>(obj: unknown, typeCheck: (arg: unknown) => arg is T): obj is T {
+    return typeCheck(obj);
+}
+
+
+function isMyInterfaceObject(arg: unknown): arg is FastifyError {
+    // Perform the actual type check here
+    // Return true if the object satisfies MyInterface, otherwise return false
+    return typeof (arg as FastifyError)?.code === "string"
+}
+
+export const errorHandler = (error: HttpException | PrismaClientKnownRequestError | FastifyError | unknown, request: FastifyRequest, reply: FastifyReply) => {
     if (error instanceof HttpException) {
         const { statusCode, message, status } = error
 
@@ -18,7 +30,27 @@ export const errorHandler = (error: HttpException | PrismaClientKnownRequestErro
         handlePrismaError(error)
 
     }
-    new HttpException()
+
+    else if (isCustomInterface<FastifyError>(error, isMyInterfaceObject)) {
+        logger.error(error, error.message)
+        reply.status(error.statusCode || 300).send({
+            status: error.code,
+            statusCode: error.statusCode,
+            message: error.message,
+        });
+
+    }
+    const unknownError = new HttpException()
+    logger.error(error, unknownError.message)
+
+    reply.status(unknownError.statusCode).send({
+        statusCode: unknownError.statusCode,
+        message: unknownError.message,
+        error
+    });
+
+
+
     logger.error(error)
 }
 
@@ -29,7 +61,7 @@ export const errorHandler = (error: HttpException | PrismaClientKnownRequestErro
 
 function handlePrismaError(error: PrismaClientKnownRequestError) {
     logger.error(error)
-    throw new HttpException(400, error.message, error.code);
+    new HttpException(400, error.message, error.code);
 }
 
 
