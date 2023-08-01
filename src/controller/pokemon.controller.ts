@@ -24,13 +24,8 @@ export async function fetchPokemonHandler(request: FastifyRequest<{
         return reply.code(200).send({ ...product.data as NeededPokemonData, pokeColor: pokeColor.color })
 
     } catch (error) {
-        if (error instanceof HttpException) {
-            throw error
-        }
-        else {
-            reply.status(500).send({ status: 500, message: 'Internal Server Error' });
+        throw error
 
-        }
     }
 
 
@@ -55,10 +50,8 @@ export async function fetchPokemonList(request: FastifyRequest<{ Querystring: Qu
 
         // return reply.code(200).send(pokeList.data)
     } catch (error) {
-        if (error instanceof HttpException) {
-            throw error
-        }
-        return reply.code(500).send(error)
+        throw error
+
     }
 
 }
