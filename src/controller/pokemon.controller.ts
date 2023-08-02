@@ -32,7 +32,7 @@ export async function fetchPokemonHandler(request: FastifyRequest<{
 }
 
 
-export async function fetchPokemonList(request: FastifyRequest<{ Querystring: QueryPokeParams }>, reply: FastifyReply) {
+export async function fetchPokemonList(request: FastifyRequest<{ Querystring: QueryPokeParams, Headers:ApiKey }>, reply: FastifyReply) {
     try {
         const { limit, page } = request.query
         const offset = (+page - 1) * +limit
