@@ -7,12 +7,12 @@ import { apiKeyCheck, authGenCheck } from "../utils/authutils"
 
 async function pokeRoutes(server: FastifyInstance) {
     server.post("/", {
-        preValidation: [apiKeyCheck<PokemonSearch, {}>],
+        preValidation: [authGenCheck<PokemonSearch, {}>,apiKeyCheck<PokemonSearch, {}>],
         schema: bodyPokeRouteOptions
     }, fetchPokemonHandler)
 
     server.get("/list", {
-        preValidation:[apiKeyCheck<{}, QueryPokeParams>],
+        preValidation:[authGenCheck<{}, QueryPokeParams>, apiKeyCheck<{}, QueryPokeParams>],
         schema:
             queryRouteOptions
 

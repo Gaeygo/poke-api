@@ -88,7 +88,7 @@ process.on('beforeExit', async () => {
 
 async function main() {
     server.register(UserRoutes, { prefix: "api/auth" })
-    server.register(pokeRoutes,  { prefix: "api/pokemon" })
+    server.register(pokeRoutes,   { prefix: "api/pokemon" })
     try {
         await server.listen({ port: address as number });
         server.log.info(`Fastify is listening on port: ${address}`);

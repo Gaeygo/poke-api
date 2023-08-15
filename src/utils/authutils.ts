@@ -8,9 +8,10 @@ import HttpException from "../schema/Error";
 
 // Middleware to check if the user is authenticated
 
-export const authGenCheck = async <P>(request: FastifyRequest<{
-    Body: P
-}>, reply: FastifyReply) => {
+export const authGenCheck = async <P, K>(request: FastifyRequest<{
+    Headers: ApiKey,
+    Body: P,
+    Querystring: K}>, reply: FastifyReply) => {
     if (!request.session.user_id) {
         // reply.redirect('/');
         reply.code(401).send({ statusCode: 401, message: "Unauthorised access!, user is not authenticated" })

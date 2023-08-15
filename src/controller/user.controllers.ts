@@ -5,6 +5,7 @@ import prisma from "../utils/prisma";
 import HttpException from "../schema/Error";
 import crypto from "crypto";
 import { hashPassword, verifyPassword } from "../helper/Hash";
+import logger from "../utils/logger";
 
 //User Login route handler
 export async function userLogin(request: FastifyRequest<{ Body: UserInput }>, reply: FastifyReply) {
@@ -54,6 +55,7 @@ export async function userCreateAccount(request: FastifyRequest<{ Body: UserInpu
 
             }
         })
+        logger.info(`${user.id} User created`)
         reply.code(201).send(user)
 
         // if (!user) throw new HttpException(400, "User doesnt exist, create account")
