@@ -1,11 +1,11 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { createApiKey } from "../helper/DBhelper";
+import { createApiKey, deleteApiKey } from "../helper/DBhelper";
 import { v4 as uuidv4 } from 'uuid';
 import crypto from "crypto"
 import HttpException from "../schema/Error";
 import prisma from "../utils/prisma";
 import logger from "../utils/logger";
-import { ApiKey } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 
 
 
@@ -21,6 +21,43 @@ export async function createKey(request: FastifyRequest, reply: FastifyReply) {
 }
 
 
-export async function deleteKey(request: FastifyRequest, reply: FastifyReply) {
+export async function deleteKey(request: FastifyRequest<{
+    Body: { keyId: string },
+}>, reply: FastifyReply) {
+
+    try {
+        const keyDeleted = await deleteApiKey(request.session.user_id, request.body.keyId)
+        return reply.code(201).send("Deleted")
+
+    } catch (error) {
+        if (
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            error.code === "P2025"
+        ) {
+            throw new HttpException(400, "ApikeyID doesn't exist")
+        }
+        else {
+            throw error
+        }
+
+
+    }
 
 }
+
+
+// try {
+//     const deletedAuthor = await prisma.author.delete({
+//         where: {
+//             id: 1,
+//         },
+//     });
+//     console.log({ deletedAuthor });
+// } catch (error) {
+//     if (
+//         error instanceof Prisma.PrismaClientKnownRequestError &&
+//         error.code === "P2025"
+//     ) {
+//         console.log("Author not found");
+//     } else console.error(error);
+// }

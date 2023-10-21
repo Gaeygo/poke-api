@@ -11,7 +11,8 @@ import HttpException from "../schema/Error";
 export const authGenCheck = async <P, K>(request: FastifyRequest<{
     Headers: ApiKey,
     Body: P,
-    Querystring: K}>, reply: FastifyReply) => {
+    Querystring: K
+}>, reply: FastifyReply) => {
     if (!request.session.user_id) {
         // reply.redirect('/');
         reply.code(401).send({ statusCode: 401, message: "Unauthorised access!, user is not authenticated" })

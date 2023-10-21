@@ -43,6 +43,11 @@ export async function userLogin(request: FastifyRequest<{ Body: UserInput }>, re
 // User account Creation route Handler
 export async function userCreateAccount(request: FastifyRequest<{ Body: UserInput }>, reply: FastifyReply) {
     try {
+
+        //Handling schema validation error
+        if (request.validationError) {
+            throw new HttpException(400, "Request body should have email and password")
+        }
         const { email, password } = request.body
         const hashedPassword = await hashPassword(password)
 

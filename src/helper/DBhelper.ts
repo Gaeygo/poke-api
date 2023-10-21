@@ -49,5 +49,6 @@ export const deleteApiKey = async (userId: string, apiId: string) => {
             userId: userId
         }
     })
+
 }
 

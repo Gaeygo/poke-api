@@ -74,6 +74,15 @@ server.register(import('@fastify/view'), {
     templates: path.join(__dirname, 'view'),
 });
 
+
+
+server.register(require('@fastify/static'), {
+    root: path.join(__dirname, 'public'),
+    prefix: '/public/', // optional: default '/'
+  })
+
+
+
 server.get("/", (request: FastifyRequest, reply: FastifyReply) => {
     reply.view("login")
 })
