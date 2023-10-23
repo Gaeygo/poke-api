@@ -23,7 +23,8 @@ export async function userLogin(request: FastifyRequest<{ Body: UserInput }>, re
         if (passwordRight) {
             request.session.user_id = user.id
             request.session.email = user.email
-
+           
+            
             reply.code(200).send(user)
         } else {
             throw new HttpException(400, "User Login is details incorrect")

@@ -7,6 +7,8 @@ import HttpException from "../schema/Error";
 
 
 // Middleware to check if the user is authenticated
+//P represents type for body
+//K represents type for QueryString
 
 export const authGenCheck = async <P, K>(request: FastifyRequest<{
     Headers: ApiKey,

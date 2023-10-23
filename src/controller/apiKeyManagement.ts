@@ -9,6 +9,16 @@ import { Prisma } from "@prisma/client";
 
 
 
+export async function fetchKeys(request: FastifyRequest, reply: FastifyReply) {
+    const apiKey = await prisma.apiKey.findMany({
+        where: {
+            userId: request.session.user_id
+        }
+    })
+    if (apiKey) return reply.code(200).send(apiKey)
+    return reply.code(404).send({ message: "not available" })
+}
+
 export async function createKey(request: FastifyRequest, reply: FastifyReply) {
     const apiKey = uuidv4()
     const apiId = crypto.randomBytes(16).toString('hex')
