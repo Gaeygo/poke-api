@@ -10,6 +10,8 @@ import path from "path";
 import handlebars from "handlebars";
 import fastifyEnv from "@fastify/env";
 import dotenv from "dotenv"
+import cors from "@fastify/cors"
+
 
 declare module "fastify" {
 
@@ -43,6 +45,10 @@ declare const process: {
 export const server = Fastify({ logger: logger, requestTimeout: 30000 })
 dotenv.config();
 
+server.register(cors, {
+    // put your options here
+    origin: true
+})
 
 
 const address = +process.env.PORT || 3000
@@ -79,7 +85,7 @@ server.register(import('@fastify/view'), {
 server.register(require('@fastify/static'), {
     root: path.join(__dirname, 'public'),
     prefix: '/public/', // optional: default '/'
-  })
+})
 
 
 
@@ -97,7 +103,7 @@ process.on('beforeExit', async () => {
 
 async function main() {
     server.register(UserRoutes, { prefix: "api/auth" })
-    server.register(pokeRoutes,   { prefix: "api/pokemon" })
+    server.register(pokeRoutes, { prefix: "api/pokemon" })
     try {
         await server.listen({ port: address as number });
         server.log.info(`Fastify is listening on port: ${address}`);
