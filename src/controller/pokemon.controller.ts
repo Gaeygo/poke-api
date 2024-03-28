@@ -41,7 +41,7 @@ export async function fetchPokemonList(request: FastifyRequest<{ Querystring: Qu
         if (pokeList.data) {
 
             const pokeNames = pokeList.data.results.map(poke => poke.name)
-            const pokeDetails = await fetchRecursiveData<PokemonForm>(pokeNames)
+            const pokeDetails = await fetchRecursiveData<PokemonForm[]>(pokeNames)
             return reply.code(200).send(pokeDetails)
 
         }

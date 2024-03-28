@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify"
-import { userCreateAccount, userLogin } from "../controller/user.controllers"
+import { userCreateAccount, userLogin, userLogout } from "../controller/user.controllers"
 import { bodyUserRouteOptions } from "../schema/UserAuth"
 import { createKey, deleteKey, fetchKeys } from "../controller/apiKeyManagement"
 import { authGenCheck } from "../utils/authutils"
@@ -8,6 +8,8 @@ export async function UserRoutes(server: FastifyInstance) {
     server.post("/login", {
         schema: bodyUserRouteOptions
     }, userLogin)
+
+    server.post("/logout", userLogout)
 
     server.get("/getkeys", { preValidation: [authGenCheck<{}, {}>] }, fetchKeys)
 

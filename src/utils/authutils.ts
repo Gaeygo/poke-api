@@ -19,6 +19,35 @@ export const authGenCheck = async <P, K>(request: FastifyRequest<{
         // reply.redirect('/');
         reply.code(401).send({ statusCode: 401, message: "Unauthorised access!, user is not authenticated" })
     }
+
+    // const user = await prisma.user.findUnique({
+    //     where: {
+    //         id: request.session.user_id
+    //     }
+    // })
+
+    // request.user = user!
+
+};
+
+// for views
+export const authGenCheckView = async <P, K>(request: FastifyRequest<{
+    Headers: ApiKey,
+    Body: P,
+    Querystring: K
+}>, reply: FastifyReply) => {
+    if (!request.session.user_id) {
+        reply.redirect('/');
+    }
+
+    const user = await prisma.user.findUnique({
+        where: {
+            id: request.session.user_id
+        }
+    })
+
+    request.user = user!
+
 };
 
 //api key validation

@@ -6,11 +6,15 @@ import { errorHandler } from "./utils/errorHandler";
 import logger from "./utils/logger";
 import { UserRoutes } from "./routes/user.route";
 import prisma from "./utils/prisma";
+import { User } from "@prisma/client";
+
 import path from "path";
-import handlebars from "handlebars";
+import ejs from "ejs";
 import fastifyEnv from "@fastify/env";
 import dotenv from "dotenv"
 import cors from "@fastify/cors"
+import { authGenCheckView } from "./utils/authutils";
+
 
 
 declare module "fastify" {
@@ -26,6 +30,10 @@ declare module "fastify" {
         email: string
     }
 
+    interface FastifyRequest {
+        user: User
+    }
+
 }
 
 
@@ -38,6 +46,8 @@ declare const process: {
         SESSION_SECRET: string
     };
 };
+
+
 
 
 
@@ -75,7 +85,7 @@ server.register(fastifySession, {
 
 server.register(import('@fastify/view'), {
     engine: {
-        handlebars,
+        ejs,
     },
     templates: path.join(__dirname, 'view'),
 });
@@ -91,6 +101,14 @@ server.register(require('@fastify/static'), {
 
 server.get("/", (request: FastifyRequest, reply: FastifyReply) => {
     reply.view("login")
+})
+
+server.get("/signup", (request: FastifyRequest, reply: FastifyReply) => {
+    reply.view("signup")
+})
+
+server.get("/dashboard", { preValidation: [authGenCheckView<{}, {}>] }, (request: FastifyRequest, reply: FastifyReply) => {
+    reply.view("dashboard", { user: request.user })
 })
 
 

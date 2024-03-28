@@ -21,11 +21,14 @@ export async function userLogin(request: FastifyRequest<{ Body: UserInput }>, re
         const passwordRight = await verifyPassword(password, user.password)
 
         if (passwordRight) {
+
             request.session.user_id = user.id
             request.session.email = user.email
-           
-            
-            reply.code(200).send(user)
+
+
+            // reply.code(200).send(user).view("./view/dashboard.ejs")
+            reply.redirect("/dashboard")
+
         } else {
             throw new HttpException(400, "User Login is details incorrect")
 
@@ -62,7 +65,8 @@ export async function userCreateAccount(request: FastifyRequest<{ Body: UserInpu
             }
         })
         logger.info(`${user.id} User created`)
-        reply.code(201).send(user)
+        // reply.code(201).send(user)
+        reply.redirect("/")
 
         // if (!user) throw new HttpException(400, "User doesnt exist, create account")
 
@@ -71,4 +75,21 @@ export async function userCreateAccount(request: FastifyRequest<{ Body: UserInpu
         throw error
     }
 
+}
+
+
+export async function userLogout(request: FastifyRequest<{ Body: UserInput }>, reply: FastifyReply) {
+    if (!request.session.user_id) {
+        reply.redirect('/');
+        // reply.code(401).send({ statusCode: 401, message: "Unauthorised access!, user is not authenticated" })
+    }
+
+    request.session.destroy((err) => {
+        if (err) {
+            reply.status(500)
+            reply.send('Internal Server Error')
+        } else {
+            reply.redirect('/')
+        }
+    })
 }
