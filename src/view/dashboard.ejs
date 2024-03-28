@@ -47,7 +47,7 @@
         <form method="post" action="/api/auth/logout">
           <button
             type="submit"
-            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
           >
             Logout
           </button>
@@ -65,13 +65,70 @@
       <h2><%= user.email %></h2>
       <% } %>
     </div>
-
-    <div class="flex w-[90%] mx-auto min-h-[200px] bg-[#D9D9D9] mt-[100px]">
+    <div class="w-[85%] mx-auto mt-[100px]">
       <div class="flex w-full justify-between">
-        <div class="w-[250px] h-[65px] bg-greent"></div>
-        <div class="w-[250px] h-[65px] bg-black"></div>
-        <div class="w-[250px] h-[65px] bg-black"></div>
-        <button class="w-[250px] h-[65px] bg-red-700"></button>
+        <div>
+          <p
+            class="text-xl font-semibold text-gray-900 hover:cursor-none dark:text-white leading-tight"
+          >
+            API Keys
+          </p>
+          <p class="text-sm text-gray-900 hover:cursor-none dark:text-white">
+            Have access to our api suite with your secret keys
+          </p>
+        </div>
+        <form method="post" action="/api/auth/logout">
+          <button
+            type="submit"
+            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          >
+            Create New API key
+          </button>
+        </form>
+      </div>
+      <div
+        class="flex w-full mt-10 shadow-lg shadow-slate-300 dark:shadow-black"
+      >
+        <table
+          class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+        >
+          <thead
+            class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+          >
+            <tr>
+              <th scope="col" class="px-6 py-3">
+                Name
+              </th>
+              <th scope="col" class="px-6 py-3">
+                created
+              </th>
+              <th scope="col" class="px-6 py-3">
+                status
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+              <th
+                scope="row"
+                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+              >
+                Apple MacBook Pro 17"
+              </th>
+              <td class="px-6 py-4">
+                Silver
+              </td>
+              <td class="flex w-full pl-6 py-4 justify-between ">
+                Laptop
+                <button
+                  class=" mr-6 text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium text-sm w-full sm:w-auto px-2.5 py-1 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+                >
+                  x
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
