@@ -17,6 +17,18 @@ export async function fetchKeys(request: FastifyRequest, reply: FastifyReply) {
     })
     if (apiKey) return reply.code(200).send(apiKey)
     return reply.code(404).send({ message: "not available" })
+
+}
+
+export async function fetchUserKeys(id: string) {
+    const apiKey = await prisma.apiKey.findMany({
+        where: {
+            userId: id
+        }
+    })
+    if (apiKey) return apiKey
+    return { message: "not available" }
+
 }
 
 export async function createKey(request: FastifyRequest, reply: FastifyReply) {
@@ -25,7 +37,8 @@ export async function createKey(request: FastifyRequest, reply: FastifyReply) {
     const newKey = await createApiKey(request.session.user_id, apiId, apiKey)
     if (!newKey) return reply.code(400).send("Error echoed")
     logger.info("new api key created")
-    return reply.code(201).send(newKey)
+    // return reply.code(201).send(newKey)
+    reply.redirect("/dashboard")
 
 
 }
@@ -37,7 +50,8 @@ export async function deleteKey(request: FastifyRequest<{
 
     try {
         const keyDeleted = await deleteApiKey(request.session.user_id, request.body.keyId)
-        return reply.code(201).send("Deleted")
+        //  reply.code(201).send("Deleted")
+         return reply.redirect("/dashboard")
 
     } catch (error) {
         if (

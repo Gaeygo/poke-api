@@ -14,6 +14,7 @@ import fastifyEnv from "@fastify/env";
 import dotenv from "dotenv"
 import cors from "@fastify/cors"
 import { authGenCheckView } from "./utils/authutils";
+import { fetchUserKeys } from "./controller/apiKeyManagement";
 
 
 
@@ -107,8 +108,11 @@ server.get("/signup", (request: FastifyRequest, reply: FastifyReply) => {
     reply.view("signup")
 })
 
-server.get("/dashboard", { preValidation: [authGenCheckView<{}, {}>] }, (request: FastifyRequest, reply: FastifyReply) => {
-    reply.view("dashboard", { user: request.user })
+server.get("/dashboard", { preValidation: [authGenCheckView<{}, {}>] }, async (request: FastifyRequest, reply: FastifyReply) => {
+    const apiKey = await fetchUserKeys(request.user.id)
+    // reply.view("dashboard", { user: request.user, apiKeys: apiKey })
+    console.log(apiKey)
+    return reply.view("dashboard", { user: request.user, apikeys: apiKey })
 })
 
 

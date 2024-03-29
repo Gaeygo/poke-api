@@ -2,6 +2,61 @@
 <html>
   <head>
     <%- include('./partials/head'); %>
+    <style>
+      /* CSS for the spinner */
+      .spinner {
+        border: 4px solid rgba(0, 0, 0, 0.1);
+        border-left-color: #7983ff;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* CSS for the modal overlay */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black */
+        z-index: 999; /* ensure modal is on top of other elements */
+        display: none; /* hidden by default */
+      }
+
+      /* CSS for the modal content */
+      .modal-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        /* padding: 20px; */
+        border-radius: 5px;
+      }
+
+      /* Define styles for the popup card */
+      .popup-card {
+        position: fixed;
+        top: 20px; /* Adjust top position */
+        left: 50%; /* Position at the horizontal center */
+        transform: translateX(-50%); /* Center horizontally */
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        display: none; /* Initially hidden */
+      }
+    </style>
   </head>
   <body class="dark:bg-greyt overscroll-none">
     <div class="w-full flex justify-between p-5">
@@ -77,10 +132,11 @@
             Have access to our api suite with your secret keys
           </p>
         </div>
-        <form method="post" action="/api/auth/logout">
+        <form method="get" action="/api/auth/createapikey">
           <button
             type="submit"
             class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            onclick="activateSpinner()"
           >
             Create New API key
           </button>
@@ -97,7 +153,7 @@
           >
             <tr>
               <th scope="col" class="px-6 py-3">
-                Name
+                Key value
               </th>
               <th scope="col" class="px-6 py-3">
                 created
@@ -108,7 +164,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+            <!-- <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
               <th
                 scope="row"
                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
@@ -118,19 +174,117 @@
               <td class="px-6 py-4">
                 Silver
               </td>
-              <td class="flex w-full pl-6 py-4 justify-between ">
+              <td class="flex w-full pl-6 py-4 justify-between">
                 Laptop
                 <button
-                  class=" mr-6 text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium text-sm w-full sm:w-auto px-2.5 py-1 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+                  class="mr-6 text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium text-sm w-full sm:w-auto px-2.5 py-1 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
                 >
                   x
                 </button>
               </td>
+            </tr> -->
+            <% if (apikeys.length > 0) { %> <% apikeys.forEach(element => { %>
+            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+              <th
+                scope="row"
+                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                id="api-key-text-<%= element.id %>"
+              >
+                <%= element.keyValue %>
+                <button>
+                  <svg
+                    class="w-6 h-6 text-gray-800 dark:text-white"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    onclick="copyApiKey('api-key-text-<%= element.id %>')"
+                  >
+                    <path
+                      stroke="currentColor"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 8v3a1 1 0 0 1-1 1H5m11 4h2a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1h-7a1 1 0 0 0-1 1v1m4 3v10a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-7.13a1 1 0 0 1 .24-.65L7.7 8.35A1 1 0 0 1 8.46 8H13a1 1 0 0 1 1 1Z"
+                    />
+                  </svg>
+                </button>
+              </th>
+              <td class="px-6 py-4">
+                <%= element.createdAt %>
+              </td>
+              <td class="flex w-full pl-6 py-4 justify-between">
+                <%= element.expired %>
+                <form
+                  method="post"
+                  action="/api/auth/deleteapikey"
+                  onclick="activateSpinner()"
+                >
+                  <input
+                    class="hidden"
+                    type="keyId"
+                    id="keyId"
+                    name="keyId"
+                    value="<%=element.id%>"
+                  />
+                  <button
+                    class="mr-6 text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium text-sm w-full sm:w-auto px-2.5 py-1 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+                  >
+                    x
+                  </button>
+                </form>
+              </td>
             </tr>
+            <% }) %> <% } %>
           </tbody>
         </table>
       </div>
     </div>
+
+    <div id="modalOverlay" class="modal-overlay"></div>
+
+    <!-- Modal content -->
+    <div id="modalContent" class="modal-content">
+      <div
+        id="spinnerContainer"
+        class="spinner-container"
+        style="display: none;"
+      >
+        <div class="spinner"></div>
+      </div>
+    </div>
+
+    <div id="popup-card" class="popup-card">
+      <span id="popup-card-message"></span>
+    </div>
+
+    <script>
+      // Function to activate the spinner
+      function activateSpinner() {
+        var spinnerContainer = document.getElementById("spinnerContainer");
+        var modalOverlay = document.getElementById("modalOverlay");
+
+        spinnerContainer.style.display = "block";
+        modalOverlay.style.display = "block";
+      }
+
+      function copyApiKey(elementId) {
+        const apiKey = document.getElementById(elementId).textContent;
+        navigator.clipboard.writeText(apiKey);
+
+        // Show the popup card
+        const popupCard = document.getElementById("popup-card");
+        const popupMessage = document.getElementById("popup-card-message");
+        popupMessage.textContent = "API Key copied to clipboard";
+        popupCard.style.display = "block";
+
+        // Hide the popup card after 2 seconds
+        setTimeout(() => {
+          popupCard.style.display = "none";
+        }, 2000);
+      }
+    </script>
 
     <script src="/public/darkmode.js"></script>
   </body>
